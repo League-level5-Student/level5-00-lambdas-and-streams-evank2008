@@ -37,7 +37,7 @@ public class Minesweeper extends PApplet {
     boolean gameInProgress = false;
     int gameTimeSec;
     int nowMs;
-
+    boolean missedASpot;
     /*
      * Game settings
      */
@@ -63,7 +63,8 @@ public class Minesweeper extends PApplet {
      * *Note* This can be done using a for loop, but try to do it with Streams.
      */
     void revealAllCells() {
-        
+
+        cells.forEach((c)->{c.revealed=true;});
     }
     
     /*
@@ -76,7 +77,9 @@ public class Minesweeper extends PApplet {
      *  noneMatch() // returns true if no items in the stream match the condition
      */
     boolean checkWin() {
-        return false;
+    	missedASpot = false;
+    	cells.forEach((c)->{if(!c.revealed&&!c.mine) {missedASpot=true;}});
+        return !missedASpot;
     }
     
     /*
@@ -96,7 +99,15 @@ public class Minesweeper extends PApplet {
      *        - - - -
      */
     void revealCell(Cell cell) {
-        
+    	if(cell.revealed) {return;}
+        if(!cell.mine) {
+        cell.revealed=true;
+        if(cell.minesAround==0) {
+        	for(Cell c: getNeighbors(cell)) {
+        		revealCell(c);
+        	}
+        }
+        } 
     }
     
     /*
@@ -111,7 +122,15 @@ public class Minesweeper extends PApplet {
      * 6. Use reduce() or sum() to count the number of 1s, i.e. mines
      */
     void setNumberOfSurroundingMines() {
-        
+        for (Cell c: cells) {
+        	int mineNeighbors=0;
+        	for(Cell n:getNeighbors(c) ) {
+        		if(n.mine) {
+        			mineNeighbors++;
+        		}
+        	}
+        	c.minesAround=mineNeighbors;
+        }
     }
     
     @Override

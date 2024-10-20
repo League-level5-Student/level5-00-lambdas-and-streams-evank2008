@@ -86,7 +86,6 @@ public class IntroToStreams {
 
         // Stream of 100 random (primitive) double values from 50 to 200
         DoubleStream dblStream = new Random().doubles(100, 50, 200);
-        
         /*
          * forEach() - Apply operation to all elements
          */
